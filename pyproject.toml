@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Sven Ulland <sven.ulland@gmail.com>"]
 
+[tool.poetry.scripts]
+ephemeral-storage-setup = "ephemeral_storage_setup.cli:cli"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 PyYAML = "^6.0"
