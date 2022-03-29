@@ -6,6 +6,8 @@ authors = ["Sven Ulland <sven.ulland@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+PyYAML = "^6.0"
+python-json-logger = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
