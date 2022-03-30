@@ -5,6 +5,9 @@ import traceback
 
 import yaml
 
+import devices
+import utils
+
 from .log import CustomJsonFormatter
 
 logger = logging.getLogger()
@@ -41,6 +44,29 @@ def main():
 
     # Update log level from config.
     logger.setLevel(config.get("log_level", logging.INFO))
+
+    member_devices = []
+    for dev in devices.scan_devices():
+        if not dev is devices.Disk:
+            continue
+
+        if dev.is_initialized():
+            continue
+
+        if not dev.matches_config(config):
+            continue
+
+        member_devices.append(dev)
+
+    if len(member_devices) == 0:
+        logger.error("no member devices found")
+        raise RuntimeError("no member devices found")
+
+    mdraid = devices.create_mdraid(member_devices, config.get("mdraid", {}))
+    utils.mkfs(mdraid.path, config.get("mkfs", {}))
+    utils.mount(mdraid.path, config.get("mount", {}))
+    utils.add_to_fstab(mdraid.uuid, config["mount"]["mount_point"])
+    utils.populate_directory(config["mount"]["mount_point"], config.get("populate", {}))
 
 
 def cli():
