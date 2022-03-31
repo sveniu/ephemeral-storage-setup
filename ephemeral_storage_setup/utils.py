@@ -19,13 +19,13 @@ def udev_settle(func):
 @udev_settle
 def mkfs(device_path, config):
     argv = config.get(
-        "argv",
+        "command",
         [
             "mkfs.ext4",
             "-L",
-            "ephemeral",
+            config.get("label", "ephemeral"),
             "-m",
-            "0",
+            config.get("reserved_blocks_percentage", 0),
         ],
     )
     argv.append(device_path)
