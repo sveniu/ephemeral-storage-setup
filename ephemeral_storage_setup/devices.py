@@ -42,14 +42,17 @@ class BlockDevice:
 
     @property
     def path(self):
+        self.rescan()
         return self.raw_info["path"]
 
     @property
     def uuid(self):
+        self.rescan()
         return self.raw_info["uuid"].lower()
 
     @property
     def children(self):
+        self.rescan()
         for child in self.raw_info["children"]:
             yield BlockDevice(child)
 
