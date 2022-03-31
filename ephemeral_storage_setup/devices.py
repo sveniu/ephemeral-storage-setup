@@ -91,10 +91,6 @@ class Disk(BlockDevice):
         super().__init__(raw_info)
 
     def is_initialized(self) -> bool:
-        # Check for existing partition table.
-        if not self.raw_info["pttype"] is None:
-            return True
-
         # Check for existing children (partitions, md, crypto, etc).
         children_raw = self.raw_info.get("children", [])
         if len(children_raw) > 0:
@@ -104,8 +100,12 @@ class Disk(BlockDevice):
         if not self.raw_info["fstype"] is None:
             return True
 
-        # Check for existing filesystem.
-        if not self.raw_info["fssize"] is None:
+        # Check for existing label.
+        if not self.raw_info["label"] is None:
+            return True
+
+        # Check for existing uuid.
+        if not self.raw_info["uuid"] is None:
             return True
 
         return False
