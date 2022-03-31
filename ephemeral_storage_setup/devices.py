@@ -42,7 +42,6 @@ class BlockDevice:
 
     @property
     def path(self):
-        self.rescan()
         return self.raw_info["path"]
 
     @property
