@@ -7,9 +7,9 @@ from ephemeral_storage_setup import execute
 
 
 def udev_settle(func):
-    def wrapper():
+    def wrapper(*args, **kwargs):
         execute.simple(["udevadm", "settle"])
-        retval = func()
+        retval = func(*args, **kwargs)
         execute.simple(["udevadm", "settle"])
         return retval
 
