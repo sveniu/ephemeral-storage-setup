@@ -16,7 +16,7 @@ def popen(argv):
     )
 
 
-def simple(argv, timeout=2.0, encoding="utf-8"):
+def simple(argv, timeout=30.0, encoding="utf-8"):
     try:
         p = popen(argv)
     except Exception as e:
