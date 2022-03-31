@@ -44,7 +44,7 @@ def main():
     # Update log level from config.
     logger.setLevel(config.get("log_level", logging.INFO))
 
-    member_devices = []
+    disks = []
     for dev in devices.scan_devices():
         if not isinstance(dev, devices.Disk):
             continue
@@ -55,13 +55,17 @@ def main():
         if not dev.matches_config(config):
             continue
 
-        member_devices.append(dev)
+        disks.append(dev)
 
-    if len(member_devices) == 0:
+    if len(disks) == 0:
         logger.error("no member devices found")
         raise RuntimeError("no member devices found")
 
-    mdraid = devices.create_mdraid(member_devices, config.get("mdraid", {}))
+    partitions = []
+    for dev in disks:
+        partitions.append(dev.create_single_partition())
+
+    mdraid = devices.create_mdraid(partitions, config.get("mdraid", {}))
     utils.mkfs(mdraid.path, config.get("mkfs", {}))
     utils.mount(mdraid.path, config.get("mount", {}))
     utils.add_to_fstab(

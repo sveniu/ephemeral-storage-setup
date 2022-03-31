@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import stat
+import uuid
 
 from ephemeral_storage_setup import execute, utils
 
@@ -57,6 +58,10 @@ class BlockDevice:
         self.rescan()
         for child in self.raw_info["children"]:
             yield BlockDevice(child)
+
+    @property
+    def sector_size(self):
+        return self.raw_info["phy-sec"]
 
     def rescan(self):
         self.raw_info = scan_devices_raw(self.path)[0]
@@ -112,26 +117,38 @@ class Disk(BlockDevice):
 
     @utils.udev_settle
     def create_single_partition(self):
+        """
+        Create a single GPT partition on this disk. Align the start of the
+        partition at 4 MiB for the least likelihood of performance issues.
+        """
+
+        # Calculate the starting sector corresponding to 4 MiB, as sgdisk only
+        # accepts sector numbers for alignment.
+        sector_start = 4 * 1024**2 // self.sector_size
+
+        # Set the partition type to "Linux RAID" (aka 0xfd00), which enables
+        # auto assembly on boot.
+        partition_type = "a19d880f-05fc-4d3b-a006-743f0f84911e"
+
+        # Get a unique partition GUID for easier lookup afterwards.
+        partition_guid = str(uuid.uuid4())
+
         execute.simple(
             [
-                "parted",
-                "--script",
-                "--align",
-                "optimal",
-                "--",
+                "sgdisk",
+                f"--set-alignment={sector_start}",
+                "--largest-new=1",
+                f"--typecode=1:{partition_type}",
+                f"--partition-guid=1:{partition_guid}",
                 self.path,
-                " ".join(
-                    (
-                        "mklabel gpt",
-                        "mkpart ephemeral ext2 4MiB 100%",
-                        "set 1 raid on",
-                    ),
-                ),
             ]
         )
 
-        # Re-read device info after partitioning.
-        self.rescan()
+        for child in self.children:
+            if child.uuid == partition_guid:
+                return child
+
+        return None
 
 
 class Partition(BlockDevice):
