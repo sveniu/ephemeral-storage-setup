@@ -1,4 +1,6 @@
 import io
+import os
+import os.path
 import tarfile
 
 import execute
@@ -44,7 +46,7 @@ def add_to_fstab(fsuuid, mount_point, fstype):
         )
 
 
-def extract_skeleton(directory, skeleton_archive_path):
+def extract_archive(directory, skeleton_archive_path):
     with tarfile.open(skeleton_archive_path) as tar:
         tar.extractall(directory)
 
@@ -52,17 +54,37 @@ def extract_skeleton(directory, skeleton_archive_path):
 def sync_directories(target, source):
     with io.BytesIO() as myio:
         with tarfile.open(fileobj=myio, mode="w") as tar:
-            # FIXME strip first component?
-            tar.add(source)
+            tar.add(source, arcname=".")
 
         myio.seek(0)
         with tarfile.open(fileobj=myio) as tar:
             tar.extractall(target)
 
 
-def populate_directory(directory, config):
-    if config["method"] == "archive":
-        extract_skeleton(directory, config["archive_path"])
+def create_files(target, entries):
+    for e in entries:
+        full_path = os.path.join(target, e["path"])
+        if e.get("type", "directory") == "directory":
+            os.makedirs(full_path)
+        else:
+            continue
 
+        if "uid" in e or "gid" in e:
+            os.chown(full_path, e.get("uid", -1), e.get("gid", -1))
+
+        if "mode" in e:
+            mode = e["mode"]
+            if isinstance(mode, str):
+                mode = int(mode, base=8)
+            os.chmod(full_path, mode)
+
+
+def populate_directory(directory, config):
     if config["method"] == "directory":
         sync_directories(directory, config["source_path"])
+
+    elif config["method"] == "archive":
+        extract_archive(directory, config["archive_path"])
+
+    elif config["method"] == "config":
+        create_files(directory, config["entries"])
