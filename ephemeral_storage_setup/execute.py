@@ -32,6 +32,10 @@ def simple(argv, timeout=30.0, encoding="utf-8"):
     try:
         stdout, stderr = p.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
+        logger.error(
+            "subprocess timed out",
+            extra={"argv": argv, "timeout": timeout},
+        )
         p.kill()
         stdout, stderr = p.communicate()
 
