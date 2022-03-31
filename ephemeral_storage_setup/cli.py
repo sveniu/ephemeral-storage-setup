@@ -64,7 +64,9 @@ def main():
     mdraid = devices.create_mdraid(member_devices, config.get("mdraid", {}))
     utils.mkfs(mdraid.path, config.get("mkfs", {}))
     utils.mount(mdraid.path, config.get("mount", {}))
-    utils.add_to_fstab(mdraid.uuid, config["mount"]["mount_point"])
+    utils.add_to_fstab(
+        mdraid.uuid, config["mount"]["mount_point"], config["mkfs"]["type"]
+    )
     utils.populate_directory(config["mount"]["mount_point"], config.get("populate", {}))
 
 
