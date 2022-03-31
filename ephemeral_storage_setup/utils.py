@@ -48,12 +48,14 @@ def add_to_fstab(fsuuid, mount_point, fstype):
     with open("/etc/fstab", "a") as f:
         f.write(
             " ".join(
-                f"UUID={fsuuid}",
-                mount_point,
-                fstype,
-                "defaults,discard",
-                "0",
-                "0",
+                (
+                    f"UUID={fsuuid}",
+                    mount_point,
+                    fstype,
+                    "defaults,discard",
+                    "0",
+                    "0",
+                )
             )
             + "\n"
         )
