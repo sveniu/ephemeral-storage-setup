@@ -3,7 +3,7 @@ import os
 import os.path
 import tarfile
 
-import execute
+from ephemeral_storage_setup import execute
 
 
 def mkfs(device_path, config):

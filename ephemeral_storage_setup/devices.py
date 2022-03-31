@@ -5,7 +5,7 @@ import logging
 import os
 import stat
 
-import execute
+from ephemeral_storage_setup import execute
 
 logger = logging.getLogger()
 

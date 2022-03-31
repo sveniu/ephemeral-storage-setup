@@ -5,8 +5,7 @@ import traceback
 
 import yaml
 
-import devices
-import utils
+from ephemeral_storage_setup import devices, utils
 
 from .log import CustomJsonFormatter
 
