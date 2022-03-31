@@ -6,6 +6,16 @@ import tarfile
 from ephemeral_storage_setup import execute
 
 
+def udev_settle(func):
+    def wrapper():
+        execute.simple(["udevadm", "settle"])
+        func()
+        execute.simple(["udevadm", "settle"])
+
+    return wrapper
+
+
+@udev_settle
 def mkfs(device_path, config):
     argv = config.get(
         "argv",
@@ -21,6 +31,7 @@ def mkfs(device_path, config):
     execute.simple(argv)
 
 
+@udev_settle
 def mount(device_path, config):
     argv = ["mount"]
     if "mount_options" in config:
@@ -31,6 +42,7 @@ def mount(device_path, config):
     execute.simple(argv)
 
 
+@udev_settle
 def add_to_fstab(fsuuid, mount_point, fstype):
     with open("/etc/fstab", "a") as f:
         f.write(

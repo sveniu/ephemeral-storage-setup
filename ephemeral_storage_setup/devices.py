@@ -5,7 +5,7 @@ import logging
 import os
 import stat
 
-from ephemeral_storage_setup import execute
+from ephemeral_storage_setup import execute, utils
 
 logger = logging.getLogger()
 
@@ -105,6 +105,7 @@ class Disk(BlockDevice):
 
         return False
 
+    @utils.udev_settle
     def create_single_partition(self):
         execute.simple(
             [
@@ -142,9 +143,8 @@ class MDRaid(BlockDevice):
         super().__init__(info)
 
 
+@utils.udev_settle
 def scan_devices(device_path=None):
-    execute.simple(["udevadm", "settle"])
-
     argv = [
         "lsblk",
         "--json",
@@ -169,6 +169,7 @@ def scan_devices(device_path=None):
     return devices
 
 
+@utils.udev_settle
 def create_mdraid(member_devices, config):
     argv = [
         "mdadm",
