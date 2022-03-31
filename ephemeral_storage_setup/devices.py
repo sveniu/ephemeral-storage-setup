@@ -56,7 +56,7 @@ class BlockDevice:
             yield BlockDevice(child)
 
     def rescan(self):
-        self.raw_info = scan_devices(self.path)[0]
+        self.raw_info = scan_devices_raw(self.path)[0]
 
     def matches_config(self, config) -> bool:
         # Check device model.
@@ -134,19 +134,19 @@ class Disk(BlockDevice):
 class Partition(BlockDevice):
     device_type_prefix = "part"
 
-    def __init__(self, info):
-        super().__init__(info)
+    def __init__(self, raw_info):
+        super().__init__(raw_info)
 
 
 class MDRaid(BlockDevice):
     device_type_prefix = "raid"
 
-    def __init__(self, info):
-        super().__init__(info)
+    def __init__(self, raw_info):
+        super().__init__(raw_info)
 
 
 @utils.udev_settle
-def scan_devices(device_path=None):
+def scan_devices_raw(device_path=None):
     argv = [
         "lsblk",
         "--json",
@@ -157,10 +157,12 @@ def scan_devices(device_path=None):
         argv.append(device_path)
 
     stdout, _ = execute.simple(argv)
-    raw_devices = json.loads(stdout)["blockdevices"]
+    return json.loads(stdout)["blockdevices"]
 
+
+def scan_devices(device_path=None):
     devices = []
-    for raw_info in raw_devices:
+    for raw_info in scan_devices_raw(device_path):
         try:
             block_device = BlockDevice(raw_info)
         except BlockDevice.Unknown:
