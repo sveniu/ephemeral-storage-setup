@@ -175,7 +175,7 @@ def create_mdraid(member_devices, config):
         "mdadm",
         "--create",
         config.get("name", "ephemeral"),
-        f'--level={config.get("level", "0")}',
+        f'--level={config.get("raid_level", "0")}',
     ]
 
     member_count = len(member_devices)
