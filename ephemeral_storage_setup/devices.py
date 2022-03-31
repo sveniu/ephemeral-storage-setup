@@ -54,6 +54,11 @@ class BlockDevice:
         return self.raw_info["uuid"].lower()
 
     @property
+    def partuuid(self):
+        self.rescan()
+        return self.raw_info["partuuid"].lower()
+
+    @property
     def children(self):
         self.rescan()
         for child in self.raw_info["children"]:
@@ -145,7 +150,7 @@ class Disk(BlockDevice):
         )
 
         for child in self.children:
-            if child.uuid == partition_guid:
+            if child.partuuid == partition_guid:
                 return child
 
         return None
