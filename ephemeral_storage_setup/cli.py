@@ -46,7 +46,7 @@ def main():
 
     member_devices = []
     for dev in devices.scan_devices():
-        if not dev is devices.Disk:
+        if not isinstance(dev, devices.Disk):
             continue
 
         if dev.is_initialized():

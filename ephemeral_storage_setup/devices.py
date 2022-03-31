@@ -56,9 +56,9 @@ class BlockDevice:
     def rescan(self):
         self.raw_info = scan_devices(self.path)[0]
 
-    def matches_config(self) -> bool:
+    def matches_config(self, config) -> bool:
         # Check device model.
-        if not self.raw_info["model"] in self.config.get(
+        if not self.raw_info["model"] in config.get(
             "models",
             (
                 "Amazon EC2 NVMe Instance Storage",
@@ -68,10 +68,10 @@ class BlockDevice:
             return False
 
         # Check device size.
-        if self.raw_info["size"] / 1024**3 < self.config.get("min_size_gb", 2):
+        if self.raw_info["size"] / 1024**3 < config.get("min_size_gb", 2):
             return False
 
-        max_size_gb = self.config.get("max_size_gb", None)
+        max_size_gb = config.get("max_size_gb", None)
         if max_size_gb is not None:
             if self.raw_info["size"] / 1024**3 > max_size_gb:
                 return False
