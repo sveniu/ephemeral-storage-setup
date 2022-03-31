@@ -1,4 +1,7 @@
-#!/usr/bin/python3
+"""
+Classes and methods for interacting with block devices, based on data obtained
+from lsblk/udev.
+"""
 
 import json
 import logging
@@ -147,6 +150,10 @@ class MDRaid(BlockDevice):
 
 @utils.udev_settle
 def scan_devices_raw(device_path=None):
+    """
+    Run lsblk and return its raw data.
+    """
+
     argv = [
         "lsblk",
         "--json",
@@ -161,6 +168,10 @@ def scan_devices_raw(device_path=None):
 
 
 def scan_devices(device_path=None):
+    """
+    Scan for block devices and return a list of BlockDevice objects.
+    """
+
     devices = []
     for raw_info in scan_devices_raw(device_path):
         try:
@@ -175,6 +186,10 @@ def scan_devices(device_path=None):
 
 @utils.udev_settle
 def create_mdraid(member_devices, config):
+    """
+    Create an MD RAID device using the supplied config.
+    """
+
     argv = [
         "mdadm",
         "--create",

@@ -7,6 +7,10 @@ from ephemeral_storage_setup import execute
 
 
 def udev_settle(func):
+    """
+    Run `udevadm settle` before and after the function is called.
+    """
+
     def wrapper(*args, **kwargs):
         execute.simple(["udevadm", "settle"])
         retval = func(*args, **kwargs)
@@ -18,6 +22,10 @@ def udev_settle(func):
 
 @udev_settle
 def mkfs(device_path, config):
+    """
+    Create a filesystem on the given device, based on the supplied config.
+    """
+
     argv = config.get(
         "command",
         [
@@ -34,6 +42,10 @@ def mkfs(device_path, config):
 
 @udev_settle
 def mount(device_path, config):
+    """
+    Mount the given device, based on the supplied config.
+    """
+
     argv = ["mount"]
     if "mount_options" in config:
         argv.append("-o")
@@ -45,6 +57,10 @@ def mount(device_path, config):
 
 @udev_settle
 def add_to_fstab(fsuuid, mount_point, fstype):
+    """
+    Add the given device (by UUID) to /etc/fstab.
+    """
+
     with open("/etc/fstab", "a") as f:
         f.write(
             " ".join(
@@ -62,11 +78,19 @@ def add_to_fstab(fsuuid, mount_point, fstype):
 
 
 def extract_archive(directory, skeleton_archive_path):
+    """
+    Extract the given archive to the given directory.
+    """
+
     with tarfile.open(skeleton_archive_path) as tar:
         tar.extractall(directory)
 
 
 def sync_directories(target, source):
+    """
+    Synchronize the contents of the source directory to the target directory.
+    """
+
     with io.BytesIO() as myio:
         with tarfile.open(fileobj=myio, mode="w") as tar:
             tar.add(source, arcname=".")
@@ -77,6 +101,10 @@ def sync_directories(target, source):
 
 
 def create_files(target, entries):
+    """
+    Create files in the given directory, according to specified entries.
+    """
+
     for e in entries:
         full_path = os.path.join(target, e["path"])
         if e.get("type", "directory") == "directory":
@@ -95,6 +123,10 @@ def create_files(target, entries):
 
 
 def populate_directory(directory, config):
+    """
+    Populate the given directory using specified config.
+    """
+
     if config["method"] == "directory":
         sync_directories(directory, config["source_path"])
 
