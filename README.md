@@ -94,6 +94,15 @@ sense, since the VM itself is intended to be disposable. It is still recommended
 to monitor disks and the apps that use them, to be able to quickly destroy the
 VM in case of issues.
 
+### Directory skeleton
+
+The mount point can be populated by a directory skeleton copied from another
+directory, a tar archive, or entries in the configuration file. This primes the
+mount point for use, either by having configured the applications to use
+directories within the mount point, or symlinks that point into it.
+
+See the [config file example](examples/config.yml) for how to do this.
+
 ### Run at boot
 
 See the [systemd service example](examples/ephemeral-storage-setup.service) for
@@ -109,6 +118,6 @@ filesystem is mounted automatically (via /etc/fstab). Both AWS and GCP preserve
 local SSDs across reboots.
 
 If a reboot loses SSD contents or re-provisions the disks entirely: The disk
-setup must be done from scratch. Both AWS and GCP lose local SSDs if the VM is
-stopped and restarted. It is recommended to rather destroy the VM and create a
-new one instead.
+setup will be done from scratch. Both AWS and GCP lose local SSD contents if the
+VM is stopped and restarted. It is recommended to rather destroy the VM and
+create a new one instead, to avoid potential issues.
