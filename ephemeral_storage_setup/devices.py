@@ -123,8 +123,9 @@ class Disk(BlockDevice):
     @utils.udev_settle
     def create_single_partition(self):
         """
-        Create a single GPT partition on this disk. Align the start of the
-        partition at 4 MiB for the least likelihood of performance issues.
+        Create a single GPT partition using sgdisk. Align the start of the
+        partition at 4 MiB for the least likelihood of performance issues. Use
+        the "Linux RAID" partition type to ensure auto assembly on boot.
         """
 
         # Calculate the starting sector corresponding to 4 MiB, as sgdisk only
@@ -135,7 +136,8 @@ class Disk(BlockDevice):
         # auto assembly on boot.
         partition_type = "a19d880f-05fc-4d3b-a006-743f0f84911e"
 
-        # Get a unique partition GUID for easier lookup afterwards.
+        # Get a unique partition GUID for a robust way of returning the
+        # partition to the caller.
         partition_guid = str(uuid.uuid4())
 
         execute.simple(
