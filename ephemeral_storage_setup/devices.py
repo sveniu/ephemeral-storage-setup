@@ -222,7 +222,7 @@ def create_mdraid(member_devices, config):
     ]
 
     member_count = len(member_devices)
-    if member_count == 1 and config.get("allow_single_member", True):
+    if member_count == 1:
         argv.append("--force")
 
     argv.append(f"--raid-devices={member_count}")

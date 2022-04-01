@@ -29,11 +29,6 @@ mdraid:
   # The value is passed directly to mdadm's --level option.
   raid_level: 0
 
-  # Force creation of single-member RAID (default: true)
-  #
-  # Single-member RAIDs are created by default, primarily to This defaults to trueWhile a single-member RAID doesn't have performance benefits,
-  force_single_member_raid: true
-
 # Filesystem configuration.
 mkfs:
   # Filesystem type (default: ext4)

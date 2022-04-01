@@ -74,6 +74,9 @@ In addition, the disk must pass some configurable checks:
 
 To inspect a system, use `lsblk --json --output-all | jq .`
 
+Note: It's perfectly fine to use persistent disks too, like the volumes provided
+by AWS EBS, for example. Just make sure the model and size filters match.
+
 ### Partitioning
 
 Each ephemeral disk gets one partition that fills the disk. The only reason for
@@ -93,6 +96,9 @@ the combined space of all member disks. More resilient levels don't really make
 sense, since the VM itself is intended to be disposable. It is still recommended
 to monitor disks and the apps that use them, to be able to quickly destroy the
 VM in case of issues.
+
+Note: With only a single disk, a RAID is still created. This is merely to keep
+things simple and consistent across systems.
 
 ### Directory skeleton
 
