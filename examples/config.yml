@@ -22,13 +22,6 @@ detect:
   # This value is only considered if it is set, and greater than 0.
   max_size_gb: -1
 
-# MD RAID configuration.
-mdraid:
-  # RAID level (default: 0)
-  #
-  # The value is passed directly to mdadm's --level option.
-  raid_level: 0
-
 # Filesystem configuration.
 mkfs:
   # Filesystem type (default: ext4)

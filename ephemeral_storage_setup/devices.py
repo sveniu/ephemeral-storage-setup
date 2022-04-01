@@ -209,7 +209,7 @@ def scan_devices(device_path=None):
 
 
 @utils.udev_settle
-def create_mdraid(member_devices, config):
+def create_mdraid(member_devices, config, name="ephemeral"):
     """
     Create an MD RAID device using the supplied config.
     """
@@ -217,8 +217,8 @@ def create_mdraid(member_devices, config):
     argv = [
         "mdadm",
         "--create",
-        config.get("name", "ephemeral"),
-        f'--level={config.get("raid_level", "0")}',
+        name,
+        "--level=0",
     ]
 
     member_count = len(member_devices)
@@ -232,7 +232,7 @@ def create_mdraid(member_devices, config):
 
     execute.simple(argv)
 
-    device_path = f'/dev/md/{config.get("name", "ephemeral")}'
+    device_path = f"/dev/md/{name}"
     if not stat.S_ISBLK(os.stat(device_path).st_mode):
         raise RuntimeError(f"not a block device: {device_path}")
 

@@ -91,8 +91,8 @@ alignment-related performance issues as much as possible.
 
 ### RAID
 
-The default RAID level is 0, aka striping. This gives the highest IO and also
-the combined space of all member disks. More resilient levels don't really make
+The RAID level is always 0, aka striping. This gives the highest IO and also the
+combined space of all member disks. More resilient levels don't really make
 sense, since the VM itself is intended to be disposable. It is still recommended
 to monitor disks and the apps that use them, to be able to quickly destroy the
 VM in case of issues.

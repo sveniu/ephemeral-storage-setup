@@ -65,7 +65,7 @@ def main():
     for dev in disks:
         partitions.append(dev.create_single_partition())
 
-    mdraid = devices.create_mdraid(partitions, config.get("mdraid", {}))
+    mdraid = devices.create_mdraid(partitions)
     utils.mkfs(mdraid.path, config.get("mkfs", {}))
     utils.mount(mdraid.path, config.get("mount", {}))
     utils.add_to_fstab(
