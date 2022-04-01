@@ -1,0 +1,91 @@
+---
+# Global log level (default: INFO)
+log_level: INFO
+
+# Disk detection configuration.
+detect:
+  # List of acceptable disk models (default: "Amazon EC2 NVMe Instance Storage",
+  # "Amazon Elastic Block Store")
+  #
+  # The lsblk `model` field must match one of these values.
+  models:
+    - Amazon EC2 NVMe Instance Storage
+    - Amazon Elastic Block Store
+
+  # Minimum acceptable disk size in GiB (default: unset = infinite)
+  #
+  # This value is only considered if it is set, and greater than or equal to 0.
+  min_size_gb: -1
+
+  # Maximum acceptable disk size in GiB (default: unset = infinite)
+  #
+  # This value is only considered if it is set, and greater than 0.
+  max_size_gb: -1
+
+# MD RAID configuration.
+mdraid:
+  # RAID level (default: 0)
+  #
+  # The value is passed directly to mdadm's --level option.
+  raid_level: 0
+
+  # Force creation of single-member RAID (default: true)
+  #
+  # Single-member RAIDs are created by default, primarily to This defaults to trueWhile a single-member RAID doesn't have performance benefits,
+  force_single_member_raid: true
+
+# Filesystem configuration.
+mkfs:
+  # Filesystem type (default: ext4)
+  #
+  # This is currently only used for mount and fstab.
+  type: ext4
+
+  # The filesystem label (default: ephemeral)
+  label: ephemeral
+
+  # The filesystem's reserved blocks percentage (default: 0)
+  reserved_blocks_percentage: 0
+
+  # Command (default: mkfs.ext4 -L ephemeral -m 0 <dev>)
+  #
+  # Use this to override the mkfs command and options.
+  command:
+    - mkfs.ext4
+    - -L
+    - ephemeral
+    - -m
+    - "0"
+
+# Mount configuration.
+mount:
+  # Mount point (default: no default)
+  mount_point: /mnt
+
+  # Add entry to /etc/fstab (default: true)
+  add_to_fstab: true
+
+# Directory population configuration.
+populate:
+  # Population method (default: unset = no action)
+  #
+  # Example showing the `directory` method.
+  method: directory
+
+  # Source directory to copy directory skeleton from.
+  source_path: /etc/skel-ephemeral/
+
+  # # Example showing the `archive` method.
+  # method: archive
+
+  # # Source archive to extract directory skeleton from.
+  # archive_path: /etc/skel-ephemeral.tar.gz
+
+  # # Example showing the `config` method.
+  # method: config
+
+  # # Source entries to populate directory skeleton with.
+  # entries:
+  #   - path: some/deep/path
+  #     type: directory
+  #     mode: "750"
