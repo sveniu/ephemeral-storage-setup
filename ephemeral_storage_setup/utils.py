@@ -20,7 +20,6 @@ def udev_settle(func):
     return wrapper
 
 
-@udev_settle
 def mkfs(device_path, config):
     """
     Create a filesystem on the given device, based on the supplied config.
@@ -40,7 +39,6 @@ def mkfs(device_path, config):
     execute.simple(argv)
 
 
-@udev_settle
 def mount(device_path, config):
     """
     Mount the given device, based on the supplied config.
@@ -55,7 +53,6 @@ def mount(device_path, config):
     execute.simple(argv)
 
 
-@udev_settle
 def add_to_fstab(fsuuid, mount_point, fstype):
     """
     Add the given device (by UUID) to /etc/fstab.

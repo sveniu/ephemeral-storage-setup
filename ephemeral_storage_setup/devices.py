@@ -172,7 +172,6 @@ class MDRaid(BlockDevice):
         super().__init__(raw_info)
 
 
-@utils.udev_settle
 def scan_devices_raw(device_path=None):
     """
     Run lsblk and return its raw data.
