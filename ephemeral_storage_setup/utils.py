@@ -53,12 +53,12 @@ def mount(device_path, config):
     execute.simple(argv)
 
 
-def add_to_fstab(fsuuid, mount_point, fstype):
+def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
     """
     Add the given device (by UUID) to /etc/fstab.
     """
 
-    with open("/etc/fstab", "a") as f:
+    with open(fstab_path, "a") as f:
         f.write(
             " ".join(
                 (
