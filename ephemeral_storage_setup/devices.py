@@ -83,12 +83,14 @@ class BlockDevice:
             return False
 
         # Check device size.
-        if "min_size_gb" in config and config["min_size_gb"] >= 0:
-            if self.raw_info["size"] / 1024**3 < config["min_size_gb"]:
+        if "min_size" in config:
+            min_size = utils.to_bytes(config["min_size"])
+            if min_size >= 0 and self.raw_info["size"] < min_size:
                 return False
 
-        if "max_size_gb" in config and config["max_size_gb"] > 0:
-            if self.raw_info["size"] / 1024**3 > config["max_size_gb"]:
+        if "max_size" in config:
+            max_size = utils.to_bytes(config["max_size"])
+            if max_size > 0 and self.raw_info["size"] > max_size:
                 return False
 
         return True

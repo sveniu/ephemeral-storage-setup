@@ -12,15 +12,19 @@ detect:
     - Amazon EC2 NVMe Instance Storage
     - Amazon Elastic Block Store
 
-  # Minimum acceptable disk size in GiB (default: unset = infinite)
+  # Minimum acceptable disk size (default: unset = infinite)
   #
   # This value is only considered if it is set, and greater than or equal to 0.
-  min_size_gb: -1
+  #
+  # Suffixes are supported: B for bytes, M for megabytes, etc.
+  min_size: -1
 
-  # Maximum acceptable disk size in GiB (default: unset = infinite)
+  # Maximum acceptable disk size (default: unset = infinite)
   #
   # This value is only considered if it is set, and greater than 0.
-  max_size_gb: -1
+  #
+  # Suffixes are supported: B for bytes, M for megabytes, etc.
+  max_size: -1
 
 # Filesystem configuration.
 mkfs:

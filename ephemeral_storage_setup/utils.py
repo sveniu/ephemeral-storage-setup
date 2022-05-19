@@ -152,3 +152,24 @@ def populate_directory(directory, config):
 
     elif config["method"] == "config":
         create_files(directory, config["entries"])
+
+
+def to_bytes(value: str):
+    """
+    Parse a string into bytes.
+    """
+
+    if isinstance(value, int):
+        return value
+
+    for unit, multiplier in {
+        "B": 1,
+        "K": 1 << 10,
+        "M": 1 << 20,
+        "G": 1 << 30,
+        "T": 1 << 40,
+    }.items():
+        if value.endswith(unit):
+            return int(value[:-1]) * multiplier
+
+    raise ValueError(f"Invalid byte value: {value}")
