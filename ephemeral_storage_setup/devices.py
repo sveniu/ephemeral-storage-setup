@@ -174,9 +174,9 @@ class MDRaid(BlockDevice):
         super().__init__(raw_info)
 
 
-def scan_devices_raw(device_path=None):
+def get_lsblk_output(device_path=None):
     """
-    Run lsblk and return its raw data.
+    Run lsblk and return its standard output.
     """
 
     argv = [
@@ -189,7 +189,16 @@ def scan_devices_raw(device_path=None):
         argv.append(device_path)
 
     stdout, _ = execute.simple(argv)
-    return json.loads(stdout)["blockdevices"]
+
+    return stdout
+
+
+def scan_devices_raw(device_path=None):
+    """
+    Return JSON-decoded lsblk output.
+    """
+
+    return json.loads(get_lsblk_output(device_path))["blockdevices"]
 
 
 def scan_devices(device_path=None):
