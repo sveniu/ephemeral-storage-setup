@@ -26,6 +26,14 @@ detect:
   # Suffixes are supported: B for bytes, M for megabytes, etc.
   max_size: -1
 
+# MD RAID configuration.
+mdraid:
+  # MD device name, passed to `mdadm --create <name> ...`
+  name: ephemeral
+
+  # RAID level, passed to mdadm's --level=N option.
+  level: 0
+
 # Filesystem configuration.
 mkfs:
   # Filesystem type (default: ext4)
