@@ -69,7 +69,7 @@ def main():
     utils.mkfs(mdraid.path, config.get("mkfs", {}))
     utils.mount(mdraid.path, config.get("mount", {}))
     utils.add_to_fstab(
-        mdraid.uuid, config["mount"]["mount_point"], config["mkfs"]["type"]
+        mdraid.uuid, config["mount"]["mount_point"], config["mkfs"].get("type", "ext4")
     )
     utils.populate_directory(config["mount"]["mount_point"], config.get("populate", {}))
 
