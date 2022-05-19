@@ -52,7 +52,7 @@ def main():
         if dev.is_initialized():
             continue
 
-        if not dev.matches_config(config):
+        if not dev.matches_config(config.get("detect", {})):
             continue
 
         disks.append(dev)
