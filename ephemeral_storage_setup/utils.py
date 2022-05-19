@@ -20,6 +20,26 @@ def udev_settle(func):
     return wrapper
 
 
+@udev_settle
+def create_single_partition(
+    dev_path,
+    sector_start,
+    partition_type,
+    partition_guid,
+):
+    execute.simple(
+        [
+            "sgdisk",
+            f"--set-alignment={sector_start}",
+            "--largest-new=1",
+            f"--typecode=1:{partition_type}",
+            f"--partition-guid=1:{partition_guid}",
+            dev_path,
+        ]
+    )
+
+
+@udev_settle
 def mkfs(device_path, config):
     """
     Create a filesystem on the given device, based on the supplied config.

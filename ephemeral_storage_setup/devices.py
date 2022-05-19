@@ -144,15 +144,11 @@ class Disk(BlockDevice):
         # partition to the caller.
         partition_guid = str(uuid.uuid4())
 
-        execute.simple(
-            [
-                "sgdisk",
-                f"--set-alignment={sector_start}",
-                "--largest-new=1",
-                f"--typecode=1:{partition_type}",
-                f"--partition-guid=1:{partition_guid}",
-                self.path,
-            ]
+        utils.create_single_partition(
+            self.path,
+            sector_start=sector_start,
+            partition_type=partition_type,
+            partition_guid=partition_guid,
         )
 
         for child in self.children:
