@@ -52,7 +52,7 @@ def mkfs(device_path, config):
             "-L",
             config.get("label", "ephemeral"),
             "-m",
-            config.get("reserved_blocks_percentage", 0),
+            str(config.get("reserved_blocks_percentage", 0)),
         ],
     )
     argv.append(device_path)
