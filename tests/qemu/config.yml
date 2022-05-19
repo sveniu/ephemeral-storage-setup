@@ -1,0 +1,24 @@
+---
+log_level: DEBUG
+
+detect:
+  models:
+    - QEMU HARDDISK
+
+  # 1.618 GiB, as created by qemu-img.
+  min_size: 1737314304
+  max_size: 1737314304
+
+mkfs:
+  type: ext4
+
+mount:
+  mount_point: /mnt
+  add_to_fstab: true
+
+populate:
+  method: config
+  entries:
+    - path: some/deep/path
+      type: directory
+      mode: "750"
