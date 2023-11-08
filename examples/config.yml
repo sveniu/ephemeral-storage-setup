@@ -62,6 +62,12 @@ mount:
   # Mount point (default: no default)
   mount_point:
     path: /mnt
+    # Ensure the mountpoint is owned by a specific user or group.
+    # Both are optional, and can either be numeric IDs or names.
+    # (default: no chown operation is done on the mountpoint)
+    chown:
+      user: ubuntu
+      group: adm
 
   # Add entry to /etc/fstab (default: true)
   add_to_fstab: true

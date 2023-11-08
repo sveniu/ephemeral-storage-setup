@@ -23,6 +23,39 @@ def test_mount(mocker):
     )
 
 
+@pytest.mark.parametrize(
+    "chown_config",
+    [
+        {"user": "testuser"},
+        {"group": "testgroup"},
+        {"user": "testuser", "group": "testgroup"},
+    ]
+)
+def test_mount_and_chown(mocker, chown_config):
+    mock_execute_simple = mocker.patch("ephemeral_storage_setup.execute.simple")
+    shutil_chown = mocker.patch("shutil.chown")
+
+    dev_path = "/dev/foo"
+    mount_path = "/mnt"
+    config = {
+        "mount_point": {
+            "path": mount_path,
+            "chown": chown_config,
+        }
+    }
+
+    utils.mount(dev_path, config)
+    mock_execute_simple.assert_any_call(
+        ["mount", dev_path, mount_path],
+    )
+
+    shutil_chown.assert_any_call(
+        mount_path,
+        user=chown_config.get("user"),
+        group=chown_config.get("group")
+    )
+
+
 def test_add_to_fstab(tmpdir):
     file = tmpdir.join("output.txt")
     fsuuid = "12345678-1234-1234-1234-123456789012"

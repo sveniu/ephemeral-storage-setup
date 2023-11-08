@@ -1,6 +1,7 @@
 import io
 import os
 import os.path
+import shutil
 import tarfile
 
 from ephemeral_storage_setup import execute
@@ -69,8 +70,17 @@ def mount(device_path, config):
         argv.append("-o")
         argv.append(",".join(config["mount_options"]))
 
-    argv.extend([device_path, config["mount_point"]["path"]])
+    mount_point_path = config["mount_point"]["path"]
+    argv.extend([device_path, mount_point_path])
     execute.simple(argv)
+
+    chown_config = config["mount_point"].get("chown")
+    if chown_config:
+        shutil.chown(
+            mount_point_path,
+            user=chown_config.get("user"),
+            group=chown_config.get("group"),
+        )
 
 
 def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
