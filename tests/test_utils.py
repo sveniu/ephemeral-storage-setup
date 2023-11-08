@@ -15,10 +15,11 @@ def test_mkfs(mocker):
 def test_mount(mocker):
     mock_execute_simple = mocker.patch("ephemeral_storage_setup.execute.simple")
     dev_path = "/dev/foo"
-    config = {"mount_point": "/mnt"}
+    mount_path = "/mnt"
+    config = {"mount_point": {"path": mount_path}}
     utils.mount(dev_path, config)
     mock_execute_simple.assert_any_call(
-        ["mount", dev_path, config["mount_point"]],
+        ["mount", dev_path, mount_path],
     )
 
 

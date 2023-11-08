@@ -60,7 +60,8 @@ mkfs:
 # Mount configuration.
 mount:
   # Mount point (default: no default)
-  mount_point: /mnt
+  mount_point:
+    path: /mnt
 
   # Add entry to /etc/fstab (default: true)
   add_to_fstab: true

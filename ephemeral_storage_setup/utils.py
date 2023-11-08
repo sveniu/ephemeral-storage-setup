@@ -69,7 +69,7 @@ def mount(device_path, config):
         argv.append("-o")
         argv.append(",".join(config["mount_options"]))
 
-    argv.extend([device_path, config["mount_point"]])
+    argv.extend([device_path, config["mount_point"]["path"]])
     execute.simple(argv)
 
 
