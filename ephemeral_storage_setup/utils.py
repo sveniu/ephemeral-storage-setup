@@ -143,14 +143,15 @@ def populate_directory(directory, config):
     """
     Populate the given directory using specified config.
     """
+    method = config.get("method", "none")
 
-    if config["method"] == "directory":
+    if method == "directory":
         sync_directories(directory, config["source_path"])
 
-    elif config["method"] == "archive":
+    elif method == "archive":
         extract_archive(directory, config["archive_path"])
 
-    elif config["method"] == "config":
+    elif method == "config":
         create_files(directory, config["entries"])
 
 
