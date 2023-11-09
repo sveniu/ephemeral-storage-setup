@@ -7,6 +7,9 @@ import tarfile
 from ephemeral_storage_setup import execute
 
 
+DEFAULT_FSTYPE = "ext4"
+
+
 def udev_settle(func):
     """
     Run `udevadm settle` before and after the function is called.
@@ -49,7 +52,7 @@ def mkfs(device_path, config):
     argv = config.get(
         "command",
         [
-            "mkfs.ext4",
+            f"mkfs.{DEFAULT_FSTYPE}",
             "-L",
             config.get("label", "ephemeral"),
             "-m",
