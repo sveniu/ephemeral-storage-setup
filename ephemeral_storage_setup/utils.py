@@ -153,7 +153,7 @@ def populate_directory(directory, config):
     """
     Populate the given directory using specified config.
     """
-    method = config.get("method", "none")
+    method = config.get("method")
 
     if method == "directory":
         sync_directories(directory, config["source_path"])
