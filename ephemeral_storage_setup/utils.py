@@ -84,12 +84,18 @@ def mount(device_path, config):
 
 
 def activate_mount(mdraid, config):
-    mount(mdraid.path, config.get("mount", {}))
-    mount_point_path = config["mount"]["mount_point"]
+    mount_config = config.get("mount", {})
+
+    mount(mdraid.path, mount_config)
+    mount_point_path = mount_config.get("mount_point", {}).get("path")
+
+    mkfs_config = config.get("mkfs", {})
     add_to_fstab(
-        mdraid.uuid, mount_point_path, config["mkfs"].get("type", "ext4")
+        mdraid.uuid, mount_point_path, mkfs_config.get("type", "ext4")
     )
-    populate_directory(mount_point_path, config.get("populate", {}))
+
+    populate_config = config.get("populate", {})
+    populate_directory(mount_point_path, populate_config)
 
 
 def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
