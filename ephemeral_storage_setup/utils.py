@@ -1,6 +1,7 @@
 import io
 import os
 import os.path
+import shutil
 import tarfile
 
 from ephemeral_storage_setup import execute
@@ -69,8 +70,17 @@ def mount(device_path, config):
         argv.append("-o")
         argv.append(",".join(config["mount_options"]))
 
-    argv.extend([device_path, config["mount_point"]])
+    mount_point_path = config["mount_point"]["path"]
+    argv.extend([device_path, mount_point_path])
     execute.simple(argv)
+
+    chown_config = config["mount_point"].get("chown")
+    if chown_config:
+        shutil.chown(
+            mount_point_path,
+            user=chown_config.get("user"),
+            group=chown_config.get("group"),
+        )
 
 
 def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
@@ -143,14 +153,15 @@ def populate_directory(directory, config):
     """
     Populate the given directory using specified config.
     """
+    method = config.get("method")
 
-    if config["method"] == "directory":
+    if method == "directory":
         sync_directories(directory, config["source_path"])
 
-    elif config["method"] == "archive":
+    elif method == "archive":
         extract_archive(directory, config["archive_path"])
 
-    elif config["method"] == "config":
+    elif method == "config":
         create_files(directory, config["entries"])
 
 

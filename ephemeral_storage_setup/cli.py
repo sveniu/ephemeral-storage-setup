@@ -47,12 +47,15 @@ def main():
     disks = []
     for dev in devices.scan_devices():
         if not isinstance(dev, devices.Disk):
+            logger.info(f"Device {dev.path} not a disk. Skipping.")
             continue
 
         if dev.is_initialized():
+            logger.info(f"Device {dev.path} is already initialized. Skipping.")
             continue
 
         if not dev.matches_config(config.get("detect", {})):
+            logger.info(f"Device {dev.path} doesn't match the detect configuration. Skipping.")
             continue
 
         disks.append(dev)
@@ -60,10 +63,16 @@ def main():
     if len(disks) == 0:
         logger.error("no member devices found")
         raise RuntimeError("no member devices found")
+    else:
+        logger.info(f"Found {len(disks)} member devices: {', '.join([d.path for d in disks])}")
 
     partitions = []
     for dev in disks:
-        partitions.append(dev.create_single_partition())
+        new_partition = dev.create_single_partition()
+        partitions.append(new_partition)
+        logger.info(f"Created partition {new_partition} on disk {dev.path}")
+
+    logging.info(f"Creating mdraid device from {len(partitions)} partitions")
 
     mdraid = devices.create_mdraid(partitions, config.get("mdraid", {}))
     utils.mkfs(mdraid.path, config.get("mkfs", {}))
