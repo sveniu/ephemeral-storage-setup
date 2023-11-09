@@ -56,6 +56,35 @@ def test_mount_and_chown(mocker, chown_config):
     )
 
 
+def test_activate_mount(mocker):
+    mock_mount = mocker.patch("ephemeral_storage_setup.utils.mount")
+    mock_add_to_fstab = mocker.patch("ephemeral_storage_setup.utils.add_to_fstab")
+    mock_populate_directory = mocker.patch("ephemeral_storage_setup.utils.populate_directory")
+
+    config = {
+        "mount": {
+            "mount_point": {
+                "path": "/mnt",
+            },
+        },
+        "mkfs": {
+            "type": "zfs",
+        },
+        "populate": {},
+    }
+
+    mdraid = mocker.Mock(
+        uuid="01234567-89ab-cdef-0123-456789abcdef",
+        path="/dev/fakemd127"
+    )
+
+    utils.activate_mount(mdraid, config)
+
+    mock_mount.assert_called_once_with(mdraid.path, config["mount"])
+    mock_add_to_fstab.assert_called_once_with(mdraid.uuid, "/mnt", "zfs")
+    mock_populate_directory.assert_called_once_with("/mnt", config["populate"])
+
+
 def test_add_to_fstab(tmpdir):
     file = tmpdir.join("output.txt")
     fsuuid = "12345678-1234-1234-1234-123456789012"

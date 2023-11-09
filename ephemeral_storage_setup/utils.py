@@ -7,6 +7,9 @@ import tarfile
 from ephemeral_storage_setup import execute
 
 
+DEFAULT_FSTYPE = "ext4"
+
+
 def udev_settle(func):
     """
     Run `udevadm settle` before and after the function is called.
@@ -49,7 +52,7 @@ def mkfs(device_path, config):
     argv = config.get(
         "command",
         [
-            "mkfs.ext4",
+            f"mkfs.{DEFAULT_FSTYPE}",
             "-L",
             config.get("label", "ephemeral"),
             "-m",
@@ -81,6 +84,21 @@ def mount(device_path, config):
             user=chown_config.get("user"),
             group=chown_config.get("group"),
         )
+
+
+def activate_mount(mdraid, config):
+    mount_config = config.get("mount", {})
+
+    mount(mdraid.path, mount_config)
+    mount_point_path = mount_config.get("mount_point", {}).get("path")
+
+    mkfs_config = config.get("mkfs", {})
+    add_to_fstab(
+        mdraid.uuid, mount_point_path, mkfs_config.get("type", "ext4")
+    )
+
+    populate_config = config.get("populate", {})
+    populate_directory(mount_point_path, populate_config)
 
 
 def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
