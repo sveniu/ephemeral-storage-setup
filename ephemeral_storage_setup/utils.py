@@ -83,6 +83,15 @@ def mount(device_path, config):
         )
 
 
+def activate_mount(mdraid, config):
+    mount(mdraid.path, config.get("mount", {}))
+    mount_point_path = config["mount"]["mount_point"]
+    add_to_fstab(
+        mdraid.uuid, mount_point_path, config["mkfs"].get("type", "ext4")
+    )
+    populate_directory(mount_point_path, config.get("populate", {}))
+
+
 def add_to_fstab(fsuuid, mount_point, fstype, fstab_path="/etc/fstab"):
     """
     Add the given device (by UUID) to /etc/fstab.
